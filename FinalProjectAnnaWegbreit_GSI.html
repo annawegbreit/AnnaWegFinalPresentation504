@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <title>Anna Wegbreit Web Mapping Final</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+    <style>
+        body {
+            margin: 0 ;
+            padding: 0;
+            font-family: Lato, sans-serif;
+            color: #0996A0;
+            background-color: '';
+            
+        }
+        header {
+            padding: 6px 10%;
+        }
+        h1 {
+            display: center;
+            text-align: center;
+            margin-right: 20px;
+            color: #0996A0;
+        }
+        h2 {
+            display: center;
+            text-align: center;
+            color: #607E16;
+        }
+        #map {
+            width: 100%;
+            height: 700px;
+            margin: 10px auto;
+            border-color: #B2CF6A
+        }
+        footer {
+            padding: 6px 10%;
+            width: 80%;
+        }
+        p {
+            font-size: 1em;
+            color: #0996A0;
+        }
+        
+ 
+        
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Green Stormwater Infrastructure Public Projects</h1>
+        <h2>Looking at Green Stormwater Infrastructure in Philadelphia</h2>
+    </header>
+
+    <div id='map'></div>
+
+    <footer>
+        <p>Map authored by Anna Wegbreit</p>
+        <p>Additional information about the data and map goes here.</p>
+    </footer>
+
+    <script src="GSI_Private_Projects_Retrofit.js"></script>
+    <script src="Major_Watersheds_Phila.js"></script>
+    <script src="GSI_Private_Projects_Regs.js"></script>
+    
+    <script>
+
+       var map = L.map('map', {
+          center: [40.0,-75.16],
+          zoom: 11
+      });
+      
+        var tiles =L.tileLayer("https://api.mapbox.com/styles/v1/awegbreit/cjgjx8laa00222rqo06uc8amw/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYXdlZ2JyZWl0IiwiYSI6ImNqZTVyNTBlbzJzcmQycW1vZWp2cTVzZ3IifQ.W3CTmyvjywai-YL3jwX1WQ")
+      /*var tiles = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+          subdomains: 'abcd',
+          maxZoom: 19,
+      });*/  
+      
+      tiles.addTo(map);
+// The "above the line" formatting used for this code was based off the code I used in Lab 9. I changed the tile layers to a light monochrome basemap from Mapbox.com to enhance the overall effect of my map's narrative. 
+
+ var watershedLayers = L.layerGroup(cobbs, schuylkill, delaware, ttf, pennypack, wissahickon, poquessing).addTo(map);
+        
+var cobbs = L.geoJson(sheds, { 
+    
+    filter: function(feature) {
+         if(feature.properties.WATERSHED_NAME == "Cobbs Creek Watershed") {
+             return feature;
+         }},
+      style: function(feature) {
+        return {
+            color: "#B51E5B",
+            weight: 0,
+            fillColor: '#B51E5B',
+            fillOpacity: .1,
+        }},
+    onEachFeature : function(feature, layer) {
+       layer.on('mouseover', function() {
+           layer.setStyle(watershedMouseover),
+            // I realized that if I was going to use this technique for each polygon layer, it would make more sense to create a "SetStyle" variable to keep each of these event listener options consistent.    
+        layer.bindPopup("<b style='color:#0996A0'>" + feature.properties.WATERSHED_NAME + "</b>").openPopup(); 
+           
+        layer.on('mouseout', function() {
+            layer.setStyle({
+            weight: 0, 
+            color: '#B51E5B',
+            fillColor: '#B51E5B',
+            fillOpacity: .1,
+        });
+            layer.closePopup();
+    });
+    
+       })}}).addTo(watershedLayers); 
+        
+var schuylkill = L.geoJson(sheds, { 
+    
+    filter: function(feature) {
+         if(feature.properties.WATERSHED_NAME == "Schuylkill River Watershed") {
+             return feature;
+         }},
+      style: function(feature) {
+        return {
+            color: "#D95030",
+            weight: 0,
+            fillColor: '#D95030',
+            fillOpacity: .1,
+        }},
+    onEachFeature : function(feature, layer) {
+       layer.on('mouseover', function() {
+           layer.setStyle(watershedMouseover),  
+        layer.bindPopup("<b style='color:#0996A0'>" + feature.properties.WATERSHED_NAME + "</b>").openPopup(); 
+           
+        layer.on('mouseout', function() {
+            layer.setStyle({
+            weight: 0, 
+            color: '#D95030',
+            fillColor: '#D95030',
+            fillOpacity: .1,
+        });
+            layer.closePopup();
+    });
+    
+       })}}).addTo(watershedLayers); 
+        
+var delaware = L.geoJson(sheds, { 
+    
+    filter: function(feature) {
+         if(feature.properties.WATERSHED_NAME == "Delaware Direct Watershed") {
+             return feature;
+         }},
+      style: function(feature) {
+        return {
+            color: "#FFC61D",
+            weight: 0,
+            fillColor: '#FCA200',
+            fillOpacity: .1,
+        }},
+    onEachFeature : function(feature, layer) {
+       layer.on('mouseover', function() {
+           layer.setStyle(watershedMouseover),  
+        layer.bindPopup("<b style='color:#0996A0'>" + feature.properties.WATERSHED_NAME + "</b>").openPopup(); 
+           
+        layer.on('mouseout', function() {
+            layer.setStyle({
+            weight: 0, 
+            color: '#FFC61D',
+            fillColor: '#FFC61D',
+            fillOpacity: .1,
+        });
+            layer.closePopup();
+    });
+    
+       })}}).addTo(watershedLayers); 
+
+var ttf = L.geoJson(sheds, { 
+    
+    filter: function(feature) {
+         if(feature.properties.WATERSHED_NAME == "Tookany/Tacony-Frankford Creek Watershed") {
+             return feature;
+         }},
+      style: function(feature) {
+        return {
+            color: "#B51E5B",
+            weight: 0,
+            fillColor: '#B51E5B',
+            fillOpacity: .1,
+        }},
+    onEachFeature : function(feature, layer) {
+       layer.on('mouseover', function() {
+           layer.setStyle(watershedMouseover),
+               
+        layer.bindPopup("<b style='color:#0996A0'>" + feature.properties.WATERSHED_NAME + "</b>").openPopup(); 
+           
+        layer.on('mouseout', function() {
+            layer.setStyle({
+            weight: 0, 
+            color: '#B51E5B',
+            fillColor: '#B51E5B',
+            fillOpacity: .1,
+        });
+            layer.closePopup();
+    });
+    
+       })}}).addTo(watershedLayers); 
+
+var pennypack = L.geoJson(sheds, { 
+    
+    filter: function(feature) {
+         if(feature.properties.WATERSHED_NAME == "Pennypack Creek Watershed") {
+             return feature;
+         }},
+      style: function(feature) {
+        return {
+            color: "#D95030",
+            weight: 0,
+            fillColor: '#D95030',
+            fillOpacity: .1,
+        }},
+    onEachFeature : function(feature, layer) {
+       layer.on('mouseover', function() {
+           layer.setStyle(watershedMouseover),  
+        layer.bindPopup("<b style='color:#0996A0'>" + feature.properties.WATERSHED_NAME + "</b>").openPopup(); 
+           
+        layer.on('mouseout', function() {
+            layer.setStyle({
+            weight: 0, 
+            color: '#D95030',
+            fillColor: '#D95030',
+            fillOpacity: .1,
+        });
+            layer.closePopup();
+    });
+    
+       })}}).addTo(watershedLayers);         
+        
+var wissahickon = L.geoJson(sheds, { 
+    
+    filter: function(feature) {
+         if(feature.properties.WATERSHED_NAME == "Wissahickon Creek Watershed") {
+             return feature;
+         }},
+      style: function(feature) {
+        return {
+            color: "#FFC61D",
+            weight: 0,
+            fillColor: '#FCA200',
+            fillOpacity: .1,
+        }},
+    onEachFeature : function(feature, layer) {
+       layer.on('mouseover', function() {
+           layer.setStyle(watershedMouseover),  
+        layer.bindPopup("<b style='color:#0996A0'>" + feature.properties.WATERSHED_NAME + "</b>").openPopup(); 
+           
+        layer.on('mouseout', function() {
+            layer.setStyle({
+            weight: 0, 
+            color: '#FFC61D',
+            fillColor: '#FFC61D',
+            fillOpacity: .1,
+        });
+            layer.closePopup();
+    });
+    
+       })}}).addTo(watershedLayers);
+        
+var poquessing = L.geoJson(sheds, { 
+    
+    filter: function(feature) {
+         if(feature.properties.WATERSHED_NAME == "Poquessing Creek Watershed") {
+             return feature;
+         }},
+      style: function(feature) {
+        return {
+            color: "#B51E5B",
+            weight: 0,
+            fillColor: '#B51E5B',
+            fillOpacity: .1,
+        }},
+    onEachFeature : function(feature, layer) {
+       layer.on('mouseover', function() {
+           layer.setStyle(watershedMouseover),
+               
+        layer.bindPopup("<b style='color:#0996A0'>" + feature.properties.WATERSHED_NAME + "</b>").openPopup(); 
+           
+        layer.on('mouseout', function() {
+            layer.setStyle({
+            weight: 0, 
+            color: '#B51E5B',
+            fillColor: '#B51E5B',
+            fillOpacity: .1,
+        });
+            layer.closePopup();
+    });
+    
+       })}}).addTo(watershedLayers); 
+        
+var watershedMouseover = {
+               fillOpacity: .5, 
+           }      
+
+
+// GSI Private Retrofit Point Layers
+var privateRetrofits = L.layerGroup(greenRoof, bios, cistern, porous, subsurface, surface).addTo(map);
+
+var greenRoof = L.geoJson(gsiPrivateRetro, {
+    pointToLayer: function(feature, latlng) {
+        return L.circleMarker(latlng, commonStyles)
+    }, 
+      filter: function(feature) {
+          if(feature.properties.GREEN_ROOF) {
+              return feature;
+          }
+      },
+        style: function(feature) {
+        return {
+            color: '#0996A0',
+            fillColor: '#0996A0',
+            fillOpacity: .7,
+            radius: getRadius(feature.properties.GREEN_ROOF)
+        } 
+    },
+     onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 4,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#0996A0',
+            fillColor: '#0996A0',
+            fillOpacity: .2,
+    });
+});
+        layer.bindPopup("<b style='color:#9FBF5F'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Green Roofs on site: " + feature.properties.GREEN_ROOF + "</b>");
+     }
+    
+    }).addTo(privateRetrofits);
+       
+var bios = L.geoJson(gsiPrivateRetro, {
+    pointToLayer: function(feature,latlng) {
+        return L.circleMarker(latlng, commonStyles);
+    },
+    filter: function(feature) {
+        if(feature.properties.BIORETENTION || feature.properties.BIOINFILTRATION) {
+            return feature;
+        }
+    },
+    style: function(feature) {
+        return {
+            color: '#046668',
+            fillColor: '#046668',
+            weight: 1, 
+            fillOpacity: .5,
+            radius: getRadius(feature.properties.BIORETENTION || feature.properties.BIOINFILTRATION)
+        } 
+    },
+     onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 1,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#046668',
+            fillColor: '#046668',
+            fillOpacity: .5,
+    });
+});
+        layer.bindPopup("<b style='color:#9FBF5F'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Bioretention Systems on site: " + feature.properties.BIORETENTION + "<br>Number of Bioinfiltration Systems on site: " + feature.properties.BIOINFILTRATION + "</b>");
+     }
+}).addTo(privateRetrofits); 
+    
+var cistern = L.geoJson(gsiPrivateRetro, {
+    pointToLayer: function(feature,latlng) {
+        return L.circleMarker(latlng, commonStyles);
+    },
+    filter: function(feature) {
+        if(feature.properties.CISTERN) {
+            return feature;
+        }
+    },
+    style: function(feature) {
+        return {
+            color: '#ABD30A',
+            fillColor: '#ABD30A',
+            fillOpacity: .5,
+            radius: getRadius(feature.properties.CISTERN)
+        } 
+    }, 
+    onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 4,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#ABD30A',
+            fillColor: '#ABD30A',
+            fillOpacity: .2,
+    });
+});
+     layer.bindPopup("<b style='color:#9FBF5F'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Cisterns on site: " + feature.properties.CISTERN + "</b>");
+}
+}).addTo(privateRetrofits);
+     
+var porous = L.geoJson(gsiPrivateRetro, {
+    pointToLayer: function(feature,latlng) {
+        return L.circleMarker(latlng, commonStyles);
+    },
+    filter: function(feature) {
+        if(feature.properties.POROUS_PAVEMENT) {
+            return feature;
+        }
+    },
+    style: function(feature) {
+        return {
+            color: '#21A065',
+            fillColor: '#21A065',
+            fillOpacity: .2,
+            radius: getRadius(feature.properties.POROUS_PAVEMENT)
+        } 
+    }, 
+    onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 4,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#21A065',
+            fillColor: '#21A065',
+            fillOpacity: .2,
+    });
+});
+        layer.bindPopup("<b style='color:#9FBF5F'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Porous Pavement uses on site: " + feature.properties.POROUS_PAVEMENT + "</b>");
+        
+}
+}).addTo(privateRetrofits);
+        
+var subsurface = L.geoJson(gsiPrivateRetro, {
+    pointToLayer: function(feature,latlng) {
+        return L.circleMarker(latlng, commonStyles);
+    },
+    filter: function(feature) {
+        if(feature.properties.SUBSURFACE_DETENTION_BASIN || feature.properties.SUBSURFACE_INFILTRATION_BASIN) {
+            return feature;
+        }
+    },
+    style: function(feature) {
+        return {
+            color: '#6AC474',
+            fillColor: '#6AC474',
+            fillOpacity: .3,
+            radius: getRadius(feature.properties.SUBSURFACE_DETENTION_BASIN + feature.properties.SUBSURFACE_INFILTRATION_BASIN)
+        } 
+    }, 
+    onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 4,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#6AC474',
+            fillColor: '#6AC474',
+            fillOpacity: .2,
+    });
+});
+        layer.bindPopup("<b style='color:#9FBF5F'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Subsurface Infiltration Basins on site: " + feature.properties.SUBSURFACE_INFILTRATION_BASIN + "<br>Number of Subsurface Detention Basins on site: " + feature.properties.SUBSURFACE_DETENTION_BASIN + "</b>");
+        
+}
+}).addTo(privateRetrofits);
+        
+var surface = L.geoJson(gsiPrivateRetro, {
+    pointToLayer: function(feature,latlng) {
+        return L.circleMarker(latlng, commonStyles);
+    },
+    filter: function(feature) {
+        if(feature.properties.SURFACE_DETENTION_BASIN || feature.properties.SURFACE_DETENTION_BASIN) {
+            return feature;
+        }
+    },
+    style: function(feature) {
+        return {
+            color: '#9FBF5F',
+            fillColor: '#9FBF5F',
+            fillOpacity: .3,
+            radius: getRadius(feature.properties.SURFACE_DETENTION_BASIN || feature.properties.SURFACE_DETENTION_BASIN)
+        } 
+    }, 
+    onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 4,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#9FBF5F',
+            fillColor: '#9FBF5F',
+            fillOpacity: .2,
+    });
+});
+        layer.bindPopup("<b style='color:#9FBF5F'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Surface Infiltration Basins on site: " + feature.properties.SURFACE_INFILTRATION_BASIN + "<br>Number of Surface Detention Basins on site: " + feature.properties.SURFACE_DETENTION_BASIN + "</b>");
+        
+}
+}).addTo(privateRetrofits);
+
+        
+// GSI Private Regulation Point Layers
+var privateRegulations =L.layerGroup().addTo(map);
+
+var greenRoof = L.geoJson(gsiPrivateRegs, {
+    pointToLayer: function(feature, latlng) {
+        return L.circleMarker(latlng, commonStyles)
+    }, 
+      filter: function(feature) {
+          if(feature.properties.GREEN_ROOF) {
+              return feature;
+          }
+      },
+        style: function(feature) {
+        return {
+            color: '#9FBF5F',
+            weight: 1,
+            fillColor: '#9FBF5F',
+            fillOpacity: .1,
+            radius: getRadius(feature.properties.GREEN_ROOF)
+        } 
+    },
+     onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 1,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#9FBF5F',
+            fillColor: '#9FBF5F',
+            fillOpacity: .1,
+    });
+});
+        layer.bindPopup("<b style='color:#9FBF5F'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Green Roofs on site: " + feature.properties.GREEN_ROOF + "</b>");
+     }
+    
+    }).addTo(privateRegulations);
+        
+var bios = L.geoJson(gsiPrivateRegs, {
+    pointToLayer: function(feature,latlng) {
+        return L.circleMarker(latlng, commonStyles);
+    },
+    filter: function(feature) {
+        if(feature.properties.BIORETENTION || feature.properties.BIOINFILTRATION) {
+            return feature;
+        }
+    },
+    style: function(feature) {
+        return {
+            color: '#046668',
+            fillColor: '#046668',
+            weight: 1, 
+            fillOpacity: .5,
+            radius: getRadius(feature.properties.BIORETENTION || feature.properties.BIOINFILTRATION)
+        } 
+    },
+     onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 1,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#046668',
+            fillColor: '#046668',
+            fillOpacity: .5,
+    });
+});
+        layer.bindPopup("<b style='color:#9FBF5F'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Bioretention Systems on site: " + feature.properties.BIORETENTION + "<br>Number of Bioinfiltration Systems on site: " + feature.properties.BIOINFILTRATION + "</b>");
+     }
+}).addTo(privateRegulations); 
+    
+var cistern = L.geoJson(gsiPrivateRegs, {
+    pointToLayer: function(feature,latlng) {
+        return L.circleMarker(latlng, commonStyles);
+    },
+    filter: function(feature) {
+        if(feature.properties.CISTERN) {
+            return feature;
+        }
+    },
+    style: function(feature) {
+        return {
+            color: '#ABD30A',
+            fillColor: '#ABD30A',
+            fillOpacity: .2,
+            radius: getRadius(feature.properties.CISTERN)
+        } 
+    }, 
+    onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 1,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#ABD30A',
+            fillColor: '#ABD30A',
+            fillOpacity: .2,
+    });
+});
+     layer.bindPopup("<b style='color:#ABD30A'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Cisterns on site: " + feature.properties.CISTERN + "</b>");
+}
+}).addTo(privateRegulations);
+    
+var porous = L.geoJson(gsiPrivateRegs, {
+    pointToLayer: function(feature,latlng) {
+        return L.circleMarker(latlng, commonStyles);
+    },
+    filter: function(feature) {
+        if(feature.properties.POROUS_PAVEMENT) {
+            return feature;
+        }
+    },
+    style: function(feature) {
+        return {
+            color: '#21A065',
+            weight:1,
+            fillColor: '#21A065',
+            fillOpacity: .2,
+            radius: getRadius(feature.properties.POROUS_PAVEMENT)
+        } 
+    }, 
+    onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 4,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#21A065',
+            fillColor: '#21A065',
+            fillOpacity: .2,
+    });
+});
+        layer.bindPopup("<b style='color:#21A065'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Porous Pavement uses on site: " + feature.properties.POROUS_PAVEMENT + "</b>");
+        
+}
+}).addTo(privateRegulations);    
+
+var subsurface = L.geoJson(gsiPrivateRegs, {
+        pointToLayer: function(feature,latlng) {
+        return L.circleMarker(latlng, commonStyles);
+    },
+    filter: function(feature) {
+        if(feature.properties.SUBSURFACE_DETENTION_BASIN || feature.properties.SUBSURFACE_INFILTRATION_BASIN) {
+            return feature;
+        }
+    },
+    style: function(feature) {
+        return {
+            color: '#6AC474',
+            weight: 1, 
+            fillColor: '#6AC474',
+            fillOpacity: .1,
+            radius: getRadius(feature.properties.SUBSURFACE_DETENTION_BASIN + feature.properties.SUBSURFACE_INFILTRATION_BASIN)
+        } 
+    }, 
+    onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 1,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#6AC474',
+            fillColor: '#6AC474',
+            fillOpacity: .2,
+    });
+});
+        layer.bindPopup("<b style='color:#6AC474'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Subsurface Infiltration Basins on site: " + feature.properties.SUBSURFACE_INFILTRATION_BASIN + "<br>Number of Subsurface Detention Basins on site: " + feature.properties.SUBSURFACE_DETENTION_BASIN + "</b>");
+        
+}
+}).addTo(privateRegulations);   
+    
+var surface = L.geoJson(gsiPrivateRegs, {
+    pointToLayer: function(feature,latlng) {
+        return L.circleMarker(latlng, commonStyles);
+    },
+    filter: function(feature) {
+        if(feature.properties.SURFACE_DETENTION_BASIN || feature.properties.SURFACE_DETENTION_BASIN) {
+            return feature;
+        }
+    },
+    style: function(feature) {
+        return {
+            color: '#9FBF5F',
+            weight: 1,
+            fillColor: '#9FBF5F',
+            fillOpacity: .1,
+            radius: getRadius(feature.properties.SURFACE_DETENTION_BASIN || feature.properties.SURFACE_DETENTION_BASIN)
+        } 
+    }, 
+    onEachFeature : function(feature,layer) {
+        layer.on('mouseover', function() {
+        layer.setStyle({
+        color: "#27BBC2", 
+        weight: 1,     
+        fillColor: "#27BBC2",
+        fillOpacity: 1,
+        opacity: 1
+    });
+});
+        layer.on('mouseout', function() {
+        layer.setStyle({
+            weight: 1, 
+            color: '#9FBF5F',
+            fillColor: '#9FBF5F',
+            fillOpacity: .1,
+    });
+});
+        layer.bindPopup("<b style='color:#9FBF5F'>Program: " + "<em>" + feature.properties.PROGRAM + "</em>" + "<br>" + feature.properties.PROJECTNAME + "<br>Number of Surface Infiltration Basins on site: " + feature.properties.SURFACE_INFILTRATION_BASIN + "<br>Number of Surface Detention Basins on site: " + feature.properties.SURFACE_DETENTION_BASIN + "</b>");
+        
+}
+}).addTo(privateRegulations);    
+        
+     
+        
+var commonStyles = {
+            weight: 1,
+            stroke: 1,
+            opacity: 1, 
+            fillOpacity: .5,
+            //radius: 3,
+        }
+
+
+function getRadius(val) {
+    var radius = Math.sqrt(val/Math.PI);
+    return radius * 5  
+}
+ 
+       
+var sourcesLayers = {
+            "<b style='color:#0996A0'>Private Retrofits</b>": privateRetrofits,
+            "<b style='color:#0996A0'>Private Regulations</b>": privateRegulations,
+            "<b style='color:#9FBF5F'>Green Roof</b>": greenRoof,
+            "<b style='color:#046668'>Bioinfiltration and Biodetention</b>": bios, 
+             "<b style='color:#21A065'>Porous Pavement</b>": porous, 
+            "<b style='color:#6AC474'>Subsurface Infiltration and Detention</b>": subsurface, 
+            "<b style='color:#9FBF5F'>Surface Infiltration and Detention</b>": surface,
+            "<b style='color:#ABD30A'>Cistern</b>": cistern,
+            "<b style='color:#FFC55B'>Watersheds</b>": watershedLayers,
+
+        }
+    
+        
+
+     
+var controlLayer = L.control.layers(null, sourcesLayers, { collapsed:false }).setPosition('bottomright').addTo(map);
+var scalebar = L.control.scale(true).addTo(map);
+
+  
+
+
+
+                  
+    </script>
+    
+</body>
+
+</html>
